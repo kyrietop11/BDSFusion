@@ -3,4 +3,4 @@ This is the official code for “BDSFusion: Bidirectional-Driven Saliency Fusion
 
 Currently, we have only made the model-related code public. Once our paper is accepted, we will make the full code publicly available.
 
-If you are interested in our infrared dual-band synthetic dataset, please contact email nwpu_lys@mail.nwpu.edu.cn.
+If you are interested in our infrared dual-band synthetic dataset, please send e-mail to email nwpu_lys@mail.nwpu.edu.cn.

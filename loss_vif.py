@@ -88,7 +88,7 @@ class L_Intensity(nn.Module):
         return Loss_intensity
 
 # 背景干扰残余度损失函数
-# 输入图像为已经过归一化处理的图像 在处理时需反归一化
+
 class L_Background_Residue(nn.Module):
     def __init__(self):
         super(L_Background_Residue, self).__init__()
@@ -101,7 +101,7 @@ class L_Background_Residue(nn.Module):
     
 
 # mask损失函数    A-L B-M
-# 输入图像为已经过归一化处理的图像 在处理时需反归一化
+
 class L_MaskFusionL1loss(nn.Module):
     def __init__(self):
         super(L_MaskFusionL1loss, self).__init__()
@@ -149,9 +149,6 @@ class fusion_loss_vif(nn.Module):
 
     def forward(self, image_A, image_B, image_fused, image_M):
         loss_l1 = 10 * self.L_Inten(image_A, image_B, image_fused)         #10 -> 20
-        # loss_gradient = 10 * self.L_Grad(image_A, image_B, image_fused)    #20 -> 10
-        # loss_SSIM = 5 * (1 - self.L_SSIM(image_A, image_B, image_fused))   #10 -> 5
-
         loss_BR = 500 * self.L_Background_Residue(image_A, image_B, image_fused) # 500  ->200
         loss_MF = 20 * self.L_MaskFusionL1loss(image_A, image_B, image_fused, image_M)  # 20 -> 10
 

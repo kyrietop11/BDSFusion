@@ -22,6 +22,10 @@ The dataset used in our paper is a semi-simulated dataset with real background  
     <img src="https://github.com/kyrietop11/BDSFusion/blob/main/figures/SCR.png" style="width: 45%; margin: 5px;" />
 </div>
 
+## Quantitative Results of Infrared Small Target Detection
+
+![image](https://github.com/kyrietop11/BDSFusion/blob/main/figures/Quantitative%20results.png)
+
 ## Qualitative Results of Infrared Small Target Detection
 
 #### Detection results on ACM-Net

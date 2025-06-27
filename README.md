@@ -41,7 +41,7 @@ The dataset used in our paper is a semi-simulated dataset with real background  
 
 
 ## Extension to infrared-visible image fusion for small target detection
-![image](https://github.com/kyrietop11/BDSFusion/blob/main/figures/Fig%20vis%20inf%20qualitative.png)
+![image](https://github.com/kyrietop11/BDSFusion/blob/main/figures/Fig_vis_inf_qualitative.png)
 
 ## Recommended Environment
  - [ ] torch  1.13.1

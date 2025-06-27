@@ -22,6 +22,10 @@ The dataset used in our paper is a semi-simulated dataset with real background  
     <img src="https://github.com/kyrietop11/BDSFusion/blob/main/figures/SCR.png" style="width: 45%; margin: 5px;" />
 </div>
 
+#### Comparison of target and background clutter characteristics in MWIR and LWIR images. 
+![image](https://github.com/kyrietop11/BDSFusion/blob/main/figures/Fig1.png)
+
+
 ## Quantitative Results of Infrared Small Target Detection
 
 ![image](https://github.com/kyrietop11/BDSFusion/blob/main/figures/Quantitative%20results.png)
@@ -35,6 +39,9 @@ The dataset used in our paper is a semi-simulated dataset with real background  
 #### Detection results on IRTransDet
 ![image](https://github.com/kyrietop11/BDSFusion/blob/main/figures/Detection%20results%20on%20IRTransDet.svg)
 
+
+## Extension to infrared-visible image fusion for small target detection
+![image](https://github.com/kyrietop11/BDSFusion/blob/main/figures/Fig%20vis%20inf%20qualitative.png)
 
 ## Recommended Environment
  - [ ] torch  1.13.1

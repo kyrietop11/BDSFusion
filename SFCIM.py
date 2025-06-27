@@ -229,25 +229,26 @@ class FIM(nn.Module):
 
         _, _, H, W = mid.shape
 
-        # 频域部分
-        fft_mid = torch.fft.rfft2(mid + 1e-8, norm='backward')  # [B,C,H,W/2+1]  [8, 64, 128, 65]
-        fft_long= torch.fft.rfft2(long + 1e-8, norm='backward')
-        mid_amp = torch.abs(fft_mid)  # [B,C,H,W/2+1]  [8, 64, 128, 65]
+        # Frequency domain part
+        fft_mid = torch.fft.rfft2(mid + 1e-8, norm='backward')
+        fft_long = torch.fft.rfft2(long + 1e-8, norm='backward')
+        mid_amp = torch.abs(fft_mid)
         mid_pha = torch.angle(fft_mid)
         long_amp = torch.abs(fft_long)
         long_pha = torch.angle(fft_long)
-        amp_fuse = self.relu1(self.conv1(torch.cat([mid_amp,long_amp],1)))
-        pha_fuse = self.relu2(self.conv2(torch.cat([mid_pha,long_pha],1)))
+        amp_fuse = self.relu1(self.conv1(torch.cat([mid_amp, long_amp], 1)))
+        pha_fuse = self.relu2(self.conv2(torch.cat([mid_pha, long_pha], 1)))
 
-        real = amp_fuse * torch.cos(pha_fuse)+1e-8
-        imag = amp_fuse * torch.sin(pha_fuse)+1e-8
-        out = torch.complex(real, imag)+1e-8
+        real = amp_fuse * torch.cos(pha_fuse) + 1e-8
+        imag = amp_fuse * torch.sin(pha_fuse) + 1e-8
+        out = torch.complex(real, imag) + 1e-8
         fuse = torch.abs(torch.fft.irfft2(out, s=(H, W), norm='backward'))
 
-        # 合并
+        # Merge
         shallow_fuse = self.shuffle(fuse)
 
         return shallow_fuse
+
 
 class SFCIM(nn.Module):
     def __init__(
@@ -275,47 +276,47 @@ class SFCIM(nn.Module):
     def forward(self, Feature_M: torch.Tensor, Feature_L: torch.Tensor):
         # B N C --> B C H W
         B, N, C = Feature_M.shape
-        H, W = int(N**0.5), int(N**0.5)
+        H, W = int(N ** 0.5), int(N ** 0.5)
         assert H * W == N, "H and W must satisfy H * W = N"
         Feature_M = Feature_M.view(B, C, H, W)
         Feature_L = Feature_L.view(B, C, H, W)
 
-        # 频域融合特征
+        # Frequency domain fusion feature
         Feature_F = self.FIM(Feature_M, Feature_L)
 
-        # Mamba模块处理前 变为B H W C
+        # Before Mamba module processing, change to B H W C
         Feature_M = Feature_M.permute(0, 2, 3, 1).contiguous()
         Feature_L = Feature_L.permute(0, 2, 3, 1).contiguous()
         Feature_F = Feature_F.permute(0, 2, 3, 1).contiguous()
 
-        # 与频域特征相减得到差异特征
+        # Subtract from frequency domain feature to get difference feature
         Difference_Feature_M = Feature_F - Feature_M
         Difference_Feature_L = Feature_F - Feature_L
 
-        # Feature_M Feature_L 先进行LN处理 再通过SS2D块 以捕获长距离依赖关系
+        # Feature_M and Feature_L are first processed by LN and then passed through the SS2D block to capture long-range dependencies
         Feature_M1 = Feature_M + self.drop_path(self.Mamba(self.ln_1(Feature_M)))
         Feature_L1 = Feature_L + self.drop_path(self.Mamba(self.ln_2(Feature_L)))
         Difference_Feature_M1 = Difference_Feature_M + self.drop_path(self.Mamba(self.ln_3(Difference_Feature_M)))
         Difference_Feature_L1 = Difference_Feature_M + self.drop_path(self.Mamba(self.ln_4(Difference_Feature_L)))
-     
-        # 与频域特征、另一模态的原始特征 得到增强后的模态特征
+
+        # Get enhanced modal features with frequency domain features and original features of the other modality
         Hybrid_Feature_M = Feature_M1 + self.alpha * Difference_Feature_M1 + Feature_L
         Hybrid_Feature_L = Feature_L1 + self.beta * Difference_Feature_L1 + Feature_M
-        
-        # 拼接+线性投影 --> B C H W
-        final_output = self.linear(torch.cat([Hybrid_Feature_M,Hybrid_Feature_L],dim=-1))
+
+        # Concatenate + Linear Projection --> B C H W
+        final_output = self.linear(torch.cat([Hybrid_Feature_M, Hybrid_Feature_L], dim=-1))
         final_output = final_output.permute(0, 3, 1, 2).contiguous()
         # B N C --> B C H W
-        final_output = final_output.view(B,N,C)
-        Hybrid_Feature_M = Hybrid_Feature_M.view(B,N,C)
-        Hybrid_Feature_L = Hybrid_Feature_L.view(B,N,C)
+        final_output = final_output.view(B, N, C)
+        Hybrid_Feature_M = Hybrid_Feature_M.view(B, N, C)
+        Hybrid_Feature_L = Hybrid_Feature_L.view(B, N, C)
 
         return Hybrid_Feature_M, Hybrid_Feature_L, final_output
 
-    
+
 if __name__ == '__main__':
     # x1 = torch.randn(8, 64, 128, 128).cuda()
     # x2 = torch.randn(8, 64, 128, 128).cuda()
     x1 = torch.randn(8, 16384, 60).cuda()
     x2 = torch.randn(8, 16384, 60).cuda()
-    model = SFCIM(hidden_dim= x1.shape[2]).cuda()
+    model = SFCIM(hidden_dim=x1.shape[2]).cuda()

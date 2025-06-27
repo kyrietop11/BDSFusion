@@ -255,7 +255,8 @@ class SS2D(nn.Module):
             out = self.dropout(out)
         return out
 
-######################################### LDConv #######################################
+
+# Light-weight Deformable Convolution
 
 
 class LDConv(nn.Module):
@@ -433,7 +434,8 @@ class LDConv(nn.Module):
         x_offset = rearrange(x_offset, "b c h w n -> b c (h n) w")
         return x_offset
 
-######################################### Conv-Mamba #######################################
+
+# Convolutional Mamba Block
 
 class Conv_Mamba(nn.Module):
     def __init__(
@@ -464,23 +466,23 @@ class Conv_Mamba(nn.Module):
         self.shuffle = nn.ChannelShuffle(2)
 
     def forward(self, input: torch.Tensor):
-        # Mamba前变为B H W C
+        # Before Mamba, change to B H W C
         input = input.permute(0, 2, 3, 1).contiguous()
         input_left, input_right = input.chunk(2, dim=-1)
         output_right = input_right + self.drop_path(self.Mamba(self.ln_1(input_right)))
-        # 卷积操作前变为B C H W
+        # Before convolution operation, change to B C H W
         input_left = input_left.permute(0, 3, 1, 2).contiguous()
         output_left = self.LDConvLayer(input_left)
         output_right = output_right.permute(0, 3, 1, 2).contiguous()
         output = torch.cat((output_left, output_right), dim=1)
         output = self.shuffle(output).permute(0, 2, 3, 1).contiguous()
-        # 残差连接
+        # Residual connection
         final_output = output + input
         final_output = final_output.permute(0, 3, 1, 2).contiguous()
         return final_output
-    
 
-######################################### Channel-Self-Attention #######################################
+
+# Channel Self-Attention Block
 class Channel_Self_Attention(nn.Module):
 
     def __init__(
@@ -511,9 +513,6 @@ class Channel_Self_Attention(nn.Module):
         assert self.dim // 4, 'The dimension of input feature should be divisible by 4.'
         self.conv_d = nn.Identity()
         self.LayerNorm = nn.LayerNorm(dim,  eps = 1e-06)
-        # self.q = nn.Conv2d(in_channels=dim, out_channels=dim, kernel_size=1, bias=qkv_bias, groups=dim)
-        # self.k = nn.Conv2d(in_channels=dim, out_channels=dim, kernel_size=1, bias=qkv_bias, groups=dim)
-        # self.v = nn.Conv2d(in_channels=dim, out_channels=dim, kernel_size=1, bias=qkv_bias, groups=dim)
         self.q = nn.Linear(in_features=dim, out_features=dim, bias=qkv_bias)
         self.k = nn.Linear(in_features=dim, out_features=dim, bias=qkv_bias)
         self.v = nn.Linear(in_features=dim, out_features=dim, bias=qkv_bias)
@@ -543,7 +542,7 @@ class Channel_Self_Attention(nn.Module):
         y = self.conv_d(y)
         B, C, H, W = y.size()
 
-        # reshape -> (B, H, W, C) -> (B, C, H * W) 生成 q, k, v
+        # reshape -> (B, H, W, C) -> (B, C, H * W) to generate q, k, v
         y = y.permute(0, 2, 3, 1) 
         y = self.LayerNorm(y)
         q = self.q(y)
@@ -572,11 +571,12 @@ class Channel_Self_Attention(nn.Module):
         attn = attn.mean((2, 3), keepdim=True)
         attn = self.ca_gate(attn)
         
-        # 残差连接
+        # 
         output = attn*input + input
         return output
-    
- ######################################### Conv-Mamba with Channel Self-Attention #######################################   
+
+
+# Convolutional Mamba with Channel Self-Attention
 
 class CSAMamba(nn.Module):
     def __init__(self, in_channels):

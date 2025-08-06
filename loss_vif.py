@@ -78,9 +78,9 @@ class fusion_loss_vif(nn.Module):
         self.L_MaskFusionL1loss = L_MaskFusionL1loss()
 
     def forward(self, image_A, image_B, image_fused, image_M):
-        loss_l1 = 10 * self.L_Inten(image_A, image_B, image_fused)  # 10 -> 20
-        loss_BR = 500 * self.L_Background_Residue(image_A, image_B, image_fused)  # 500  ->200
-        loss_MF = 20 * self.L_MaskFusionL1loss(image_A, image_B, image_fused, image_M)  # 20 -> 10
+        loss_l1 = 10 * self.L_Inten(image_A, image_B, image_fused)
+        loss_BR = 500 * self.L_Background_Residue(image_A, image_B, image_fused)
+        loss_MF = 20 * self.L_MaskFusionL1loss(image_A, image_B, image_fused, image_M) 
 
         fusion_loss = loss_l1 + loss_BR + loss_MF
         return fusion_loss, loss_l1, loss_BR, loss_MF

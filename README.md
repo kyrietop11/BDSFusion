@@ -15,6 +15,10 @@ This is the official code for **“BDSFusion: Bidirectional-Driven Saliency Fusi
   </tr>
 </table>
 
+## Overall Architecture
+
+![image](https://github.com/kyrietop11/BDSFusion/blob/main/figures/Overall%20Architecture.png)
+
 ## Dataset
 The dataset used in our paper is a semi-simulated dataset with real background  MWIR and LWIR images and synthesized small target motion, appearance, and intensity through a semi-simulated approach. This dataset consisted of 15,331 pairs of meticulously aligned MWIR and LWIR images, each with a resolution of 640×512 pixels and target sizes ranging from 5 to 15 pixels. It encompassed various complex environments including high-brightness clouds and sea clutter. The data statistics are as follows:
 <div style="display: flex; justify-content: center;">
@@ -50,5 +54,4 @@ The dataset used in our paper is a semi-simulated dataset with real background  
  - [ ] mamba-ssm 1.0.1
  - [ ] causal-conv1d 1.0.0
 
-## Contact
-**Welcome to raise issues or email to [nwpu_lys@mail.nwpu.edu.cn](nwpu_lys@mail.nwpu.edu.cn) for any question regarding our BDSFusion.**
+

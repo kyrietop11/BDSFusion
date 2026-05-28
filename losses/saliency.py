@@ -13,7 +13,6 @@ import torch.nn.functional as F
 
 
 def admd_response(image: torch.Tensor) -> torch.Tensor:
-    """Differentiable ADMD-style directional response used for BR loss/metric."""
 
     gray = image.mean(dim=1, keepdim=True)
     kernels = []
@@ -31,7 +30,6 @@ def admd_response(image: torch.Tensor) -> torch.Tensor:
 
 
 def admd_residual_ratio(image: torch.Tensor, eps: float = 1e-6) -> torch.Tensor:
-    """Differentiable ADMD residual ratio with straight-through sigmoid surrogate."""
 
     response = admd_response(image)
     threshold = response.mean(dim=(-2, -1), keepdim=True) + response.std(dim=(-2, -1), keepdim=True)
@@ -43,7 +41,6 @@ def admd_residual_ratio(image: torch.Tensor, eps: float = 1e-6) -> torch.Tensor:
 
 
 def haar_smooth_background(image: torch.Tensor) -> torch.Tensor:
-    """Haar low-frequency background reconstruction."""
 
     h, w = image.shape[-2:]
     pad_h = h % 2
@@ -87,7 +84,6 @@ class L_MaskFusionL1loss(nn.Module):
 
 
 class DetectionDrivenSaliencyLoss(nn.Module):
-    """Detection-driven saliency loss: intensity + background residual + Haar wavelet mask."""
 
     def __init__(
         self,
@@ -118,7 +114,6 @@ class DetectionDrivenSaliencyLoss(nn.Module):
 
 
 class BDSFusionLoss(DetectionDrivenSaliencyLoss):
-    """Training-friendly wrapper returning named loss components."""
 
     def forward(
         self,

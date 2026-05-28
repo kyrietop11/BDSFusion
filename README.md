@@ -36,8 +36,8 @@ The dataset used in our paper is a semi-simulated dataset with real background  
 
 ## Qualitative Results of Infrared Small Target Detection
 
-#### Detection results on ACM-Net
-![image](https://github.com/kyrietop11/BDSFusion/blob/main/figures/Detection%20results%20on%20ACM-Net.svg)
+#### Detection results on ACM
+![image](https://github.com/kyrietop11/BDSFusion/blob/main/figures/Detection%20results%20on%20ACM.svg)
 
 
 #### Detection results on IRTransDet

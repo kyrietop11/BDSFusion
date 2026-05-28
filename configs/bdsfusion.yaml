@@ -1,0 +1,37 @@
+model:
+  in_channels: 1
+  out_channels: 1
+  embed_dim: 36
+  patch_size: 2
+  depths: [3]
+  recon_count: 2
+  sfcim_iters: 4
+  heads: 4
+  drop_path: 0.0
+  dropout: 0.0
+  window_size: 7
+  d_state: 24
+  num_ldconv: 2
+  ldconv_num_param: 3
+  sfcim_d_state: 24
+
+data:
+  channels: 1
+  root: datasets/data/Datasets
+  crop_size: 128
+  augment: true
+  num_workers: 4
+
+train:
+  batch_size: 8
+  lr: 0.0001
+  epochs: 100
+  grad_clip: 1.0
+  seed: 42
+  save_interval: 10
+  log_interval: 50
+
+loss:
+  lambda_intensity: 20.0
+  lambda_background: 500.0
+  lambda_haar: 10.0

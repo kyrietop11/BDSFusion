@@ -1,5 +1,5 @@
 # *<center>BDSFusion: Bidirectional-Driven Saliency Fusion Network for Infrared Dual-Band Images</center>*
-This is the official code for **“BDSFusion: Bidirectional-Driven Saliency Fusion Network for Infrared Dual-Band Images”**. **Note:** Currently, we have only made the core modules of the model's code public. Once our paper is accepted, we will make the full code publicly available.
+This is the official code for **”BDSFusion: Bidirectional-Driven Saliency Fusion Network for Infrared Dual-Band Images”** (Information Fusion, 2025).
 
 ## Motivation
 <table>
@@ -48,10 +48,27 @@ The dataset used in our paper is a semi-simulated dataset with real background  
 ![image](https://github.com/kyrietop11/BDSFusion/blob/main/figures/Fig_vis_inf_qualitative.png)
 
 ## Recommended Environment
- - [ ] torch  1.13.1
- - [ ] cudatoolkit 11.7
- - [ ] torchvision 0.14.1
- - [ ] mamba-ssm 1.0.1
- - [ ] causal-conv1d 1.0.0
+ - [ ] Python 3.10+
+ - [ ] torch 2.3.0+
+ - [ ] torchvision 0.18.0+
+ - [ ] mamba-ssm 1.1.3+
+ - [ ] causal-conv1d 1.2.0+
+ - [ ] timm 0.9.0+
+ - [ ] einops
+ - [ ] pyyaml
+ - [ ] pillow
 
+## Citation
 
+If you find this work useful, please cite:
+
+```bibtex
+@article{li2025bdsfusion,
+  title={BDSFusion: A bidirectionally driven saliency fusion network for enhancing small target detection in infrared dual-band images},
+  author={Li, Shaoyi and Li, Yusong and Niu, Saisai and Yang, Junyan and Yang, Xi and Yue, Xiaokui},
+  journal={Information Fusion},
+  pages={103600},
+  year={2025},
+  publisher={Elsevier}
+}
+```
